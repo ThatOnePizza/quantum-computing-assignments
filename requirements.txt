@@ -68,6 +68,7 @@ pybind11==2.6.1
 pycodestyle==2.6.0
 pycparser==2.20
 Pygments @ file:///tmp/build/80754af9/pygments_1604103097372/work
+pylatexenc==2.8
 pylint @ file:///tmp/build/80754af9/pylint_1598623985952/work
 pyparsing==2.4.7
 pyrsistent==0.17.3
