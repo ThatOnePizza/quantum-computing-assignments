@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[8]:
 
 
 from typing import Union
@@ -21,7 +21,7 @@ from numpy import pi
 provider = IBMQ.load_account()
 
 
-# In[2]:
+# In[9]:
 
 
 # Number of shots
@@ -30,7 +30,10 @@ shots = 1024
 # Choose a device
 provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
 
-n = 6  # Set this to double the secret's string size
+# Set the secret here
+s = '11'
+n = len(s) * 2
+
 # Run on quantum computer
 backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= n and 
                                    not x.configuration().simulator and x.status().operational==True))
@@ -43,7 +46,7 @@ backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qub
 backend
 
 
-# In[3]:
+# In[10]:
 
 
 class SimonBlackbox:
@@ -97,21 +100,21 @@ class SimonBlackbox:
         return (accu % 2)
 
 
-# In[4]:
+# In[11]:
 
 
 # Initialize Circuit
 quantum_reg = QuantumRegister(n/2, "q")
 ancilla_reg = AncillaRegister(n/2, "a")
-classical_reg = ClassicalRegister(n, "c")
+classical_reg = ClassicalRegister(n/2, "c")
 
 circ = QuantumCircuit(quantum_reg, ancilla_reg, classical_reg, name="Home Assignment")
 
 
-# In[5]:
+# In[12]:
 
 
-blackbox = SimonBlackbox('110')
+blackbox = SimonBlackbox(s)
 
 for qbit in quantum_reg:
     circ.h(qbit)
@@ -123,7 +126,7 @@ circ.barrier()
 circ.draw(output='mpl')
 
 
-# In[6]:
+# In[13]:
 
 
 for index, qbit in enumerate(quantum_reg):
@@ -133,7 +136,7 @@ for index, qbit in enumerate(quantum_reg):
 circ.draw(output='mpl')
 
 
-# In[ ]:
+# In[14]:
 
 
 job = execute(circ, backend=backend, shots=shots)
@@ -150,7 +153,7 @@ data = result.get_counts(circ)
 plot_histogram(data)
 
 
-# In[ ]:
+# In[15]:
 
 
 dot_results: list = []
@@ -159,3 +162,10 @@ x: str
 for x in data:
     dot_results.append(blackbox.sdota(x))
     print(f"secret.{x} = {blackbox.sdota(x)} (mod 2)")
+
+
+# In[ ]:
+
+
+
+
