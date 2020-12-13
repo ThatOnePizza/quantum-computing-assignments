@@ -30,8 +30,8 @@ shots = 1024
 # Choose a device
 provider = IBMQ.get_provider(hub='ibm-q', group='open', project='main')
 
-# Run on quantum computer
 n = 6  # Set this to double the secret's string size
+# Run on quantum computer
 backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= n and 
                                    not x.configuration().simulator and x.status().operational==True))
 
@@ -101,9 +101,9 @@ class SimonBlackbox:
 
 
 # Initialize Circuit
-quantum_reg = QuantumRegister(3, "q")
-ancilla_reg = AncillaRegister(3, "a")
-classical_reg = ClassicalRegister(3, "c")
+quantum_reg = QuantumRegister(n/2, "q")
+ancilla_reg = AncillaRegister(n/2, "a")
+classical_reg = ClassicalRegister(n, "c")
 
 circ = QuantumCircuit(quantum_reg, ancilla_reg, classical_reg, name="Home Assignment")
 
@@ -125,6 +125,11 @@ circ.draw(output='mpl')
 
 # In[6]:
 
+# Misuro tutti i qubit ancilla
+for index, qbit in enumerate(ancilla_reg):
+    circ.measure(qbit, classical_reg[index + len(quantum_reg)])
+
+circ.barrier()
 
 for index, qbit in enumerate(quantum_reg):
     circ.h(qbit)
@@ -136,7 +141,6 @@ circ.draw(output='mpl')
 # In[ ]:
 
 
-# Change to either backend or simulator
 job = execute(circ, backend=backend, shots=shots)
 
 from qiskit.tools.monitor import job_monitor
