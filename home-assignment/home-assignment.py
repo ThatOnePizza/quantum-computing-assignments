@@ -125,11 +125,6 @@ circ.draw(output='mpl')
 
 # In[6]:
 
-# Misuro tutti i qubit ancilla
-for index, qbit in enumerate(ancilla_reg):
-    circ.measure(qbit, classical_reg[index + len(quantum_reg)])
-
-circ.barrier()
 
 for index, qbit in enumerate(quantum_reg):
     circ.h(qbit)
